@@ -5,7 +5,6 @@ import { fileURLToPath } from 'url';
 import { dirname, join, basename as _basename } from 'path';
 import Sequelize, { DataTypes } from 'sequelize';
 import dotenv from 'dotenv';
-import SeedHistory from './seedhistory.js';
 
 dotenv.config();
 
@@ -13,6 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const basename = _basename(__filename);
 
+// Configuração do Sequelize
 const sequelize = new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
@@ -27,6 +27,7 @@ const sequelize = new Sequelize(
 
 const db = {};
 
+// Função para carregar os modelos
 async function loadModels() {
   const files = readdirSync(__dirname).filter(file => {
     return (
@@ -37,6 +38,7 @@ async function loadModels() {
     );
   });
 
+  // Carregando os modelos
   for (const file of files) {
     const modelPath = join(__dirname, file);
     const { default: model } = await import(modelPath);
@@ -44,6 +46,7 @@ async function loadModels() {
     db[initializedModel.name] = initializedModel;
   }
 
+  // Chama as associações após carregar todos os modelos
   Object.keys(db).forEach(modelName => {
     if (db[modelName].associate) {
       db[modelName].associate(db);
@@ -56,4 +59,4 @@ await loadModels();
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-export default db;  // Exporta o objeto db como padrão (default export)
+export default db;

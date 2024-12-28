@@ -1,10 +1,26 @@
 const missingFields = [];
 export async function validateRequest(requiredFields, req) {
-    for (const field of requiredFields) {
-        if (!req.body[field]) missingFields.push(field);
-    }
-    
-    if (missingFields.length > 0) return {error: 'Campos necessários faltando',missingFields};
+    const missingFields = [];
 
-    return { success: 'Requisição correta'}
+    for (const field of requiredFields) {
+        const fieldParts = field.split('.'); // Suporta campos aninhados
+        let value = req.body;
+
+        for (const part of fieldParts) {
+            value = value?.[part];
+            if (value === undefined) break;
+        }
+
+        if (value === undefined) missingFields.push(field);
+    }
+
+    if (missingFields.length > 0) {
+        return {
+            error: 'Campos necessários faltando',
+            missingFields
+        };
+    }
+
+    return null; // Indica que a validação passou
+
 }

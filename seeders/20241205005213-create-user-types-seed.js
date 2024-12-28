@@ -8,7 +8,6 @@ export async function up(queryInterface, Sequelize) {
   });
   
   if (seedExecuted) {
-    console.log('A seed de usuários já foi executada.');
     return;
   }
   
@@ -36,7 +35,6 @@ export async function down(queryInterface, Sequelize) {
     where: { name: 'CreateUserTypeSeeder' },
   });
   if (seedExecuted) {
-    console.log('Achou a seed CreateUserTypeSeeder')
     await seedExecuted.destroy();
   }
   await queryInterface.bulkDelete('user_types', null, {});

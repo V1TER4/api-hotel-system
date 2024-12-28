@@ -17,7 +17,6 @@ export async function up(queryInterface, Sequelize) {
   });
 
   if (seedExecuted) {
-    console.log('A seed de usuários já foi executada.');
     return;
   }
 
@@ -38,7 +37,6 @@ export async function up(queryInterface, Sequelize) {
     executedAt: new Date(),
   });
 
-  console.log('Seed CreateStatusesSeeder executada com sucesso!');
 }
 export async function down(queryInterface, Sequelize) {
   /**
@@ -52,7 +50,6 @@ export async function down(queryInterface, Sequelize) {
     where: { name: 'CreateStatusesSeeder' },
   });
   if (seedExecuted) {
-    console.log('Achou a seed CreateStatusesSeeder')
     await seedExecuted.destroy(); 
   }
   await queryInterface.bulkDelete('statuses', null, {});

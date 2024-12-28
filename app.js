@@ -1,7 +1,6 @@
 import express, { response } from 'express';
 import bodyParser from 'body-parser';
-import auth from './routes/auth.js';
-import user from './routes/user.js';
+import * as routes from './routes/index.js';
 import env from 'dotenv';
 import cors from 'cors';
 import db from './models/index.js';
@@ -17,9 +16,14 @@ app.get('/index', (req, res) => {
     res.send("AQUI: " + process.env.DB_NAME)
 })
 
-app.use('/auth', auth);
+// Authorization
+app.use('/auth', routes.auth);
 
-app.use('/api/user', user);
+// User
+app.use('/api/user', routes.user);
+
+// Hotel
+app.use('/api/hotel', routes.hotel);
 
 (async () => {
     try {

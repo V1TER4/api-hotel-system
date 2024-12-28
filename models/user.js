@@ -11,17 +11,22 @@ export default (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User.belongsTo(models.address, { foreignKey: 'address_id' });
+      User.belongsTo(models.user_types, { foreignKey: 'user_type_id' });
+      User.belongsTo(models.statuses, { foreignKey: 'status_id' });
     }
   }
   User.init({
     name: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
+    telephone: DataTypes.STRING,
     token: DataTypes.STRING,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
     user_type_id: DataTypes.INTEGER,
     status_id: DataTypes.INTEGER,
+    address_id: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'users',

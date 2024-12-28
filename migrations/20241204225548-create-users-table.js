@@ -19,6 +19,10 @@ export async function up(queryInterface, Sequelize) {
       type: Sequelize.STRING,
       allowNull: false,
     },
+    telephone: {
+      type: Sequelize.STRING,
+      allowNull: true
+    },
     email: {
       type: Sequelize.STRING,
       unique: true,

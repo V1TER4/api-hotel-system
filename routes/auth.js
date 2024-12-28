@@ -13,10 +13,10 @@ route.post('/login', async (req, res) => {
         });
 
         if(!user)
-            return res.status(404).json({ message: 'Usuário não encontrado!'})
+            return res.status(404).json({ message: 'User or Password is incorrect!'})
 
         const validPassword = await validators.passwordValidator.validPassword(req.body.password, user.password);
-        if (!validPassword) return res.status(401).json({ message: 'Usuário/Senha incorreto(s)!' })
+        if (!validPassword) return res.status(401).json({ message: 'User or Password is incorrect!' })
 
         const validToken = await services.tokenService.validToken(user);
         if (!validToken) {
@@ -25,7 +25,7 @@ route.post('/login', async (req, res) => {
             await user.save();
         }
 
-        return res.status(200).json({ message: 'Deu certo', data: user})
+        return res.status(200).json({ message: 'Success', data: user})
     } catch (error) {
         console.log('============ Houve um erro no Login ================ ' + error);
         return res.status(400).json({ message: 'Erro interno do servidor', errorMessage: error });
