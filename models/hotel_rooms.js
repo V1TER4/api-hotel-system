@@ -14,7 +14,9 @@ export default (sequelize, DataTypes) => {
   hotel_rooms.init({
     hotel_id: DataTypes.INTEGER,
     room_number: DataTypes.STRING,
-    capacity: DataTypes.INTEGER
+    capacity: DataTypes.INTEGER,
+    price: DataTypes.FLOAT,
+    description: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'hotel_rooms',

@@ -13,7 +13,7 @@ export default (sequelize, DataTypes) => {
   }
   companies.init({
     name: DataTypes.STRING,
-    document: DataTypes.INTEGER,
+    document: DataTypes.STRING,
     company_type_id: DataTypes.INTEGER
   }, {
     sequelize,

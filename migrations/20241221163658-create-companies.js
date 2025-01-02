@@ -12,7 +12,7 @@ export async function up(queryInterface, Sequelize) {
       type: Sequelize.STRING
     },
     document: {
-      type: Sequelize.INTEGER
+      type: Sequelize.STRING
     },
     company_type_id: {
       type: Sequelize.INTEGER

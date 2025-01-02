@@ -8,22 +8,11 @@ export async function up(queryInterface, Sequelize) {
    * Example:
    * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
    */
-  await queryInterface.addColumn('hotels', 'address_id', {
+  await queryInterface.addColumn('hotels', 'status_id', {
     type: Sequelize.INTEGER,
     allowNull: true,
     references: {
-      model: 'addresses',
-      key: 'id'
-    },
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE',
-  });
-
-  await queryInterface.addColumn('hotels', 'company_id', {
-    type: Sequelize.INTEGER,
-    allowNull: true,
-    references: {
-      model: 'companies',
+      model: 'statuses',
       key: 'id'
     },
     onUpdate: 'CASCADE',
@@ -38,5 +27,4 @@ export async function down(queryInterface, Sequelize) {
    * await queryInterface.dropTable('users');
    */
   await queryInterface.removeColumn('hotels', 'address_id');
-  await queryInterface.removeColumn('hotels', 'company_id');
 }
