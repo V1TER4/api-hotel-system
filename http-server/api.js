@@ -1,7 +1,7 @@
 
-var http = require('http');
+import { createServer } from 'http';
 
-var server = http.createServer(function(req, res) {
+var server = createServer(function(req, res) {
   res.writeHead(200);
   res.end('hey');
 }).listen(process.env.PORT || 8000, function() {

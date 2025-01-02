@@ -38,7 +38,7 @@ route.get('/all', validateToken, async (req, res) => {
     }
 });
 
-// get hotel by id
+// Get hotel by id
 route.get('/:id', async (req, res) => {
     try {
         const hotelId = req.params.id;
