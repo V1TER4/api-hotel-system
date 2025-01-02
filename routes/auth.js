@@ -27,8 +27,7 @@ route.post('/login', async (req, res) => {
 
         return res.status(200).json({ message: 'Success', data: user})
     } catch (error) {
-        console.log('============ Houve um erro no Login ================ ' + error);
-        return res.status(400).json({ message: 'Erro interno do servidor', errorMessage: error });
+        return res.status(400).json({ message: 'Internal Server Error', errorMessage: error });
     }
 });
 

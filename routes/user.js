@@ -33,9 +33,8 @@ route.post('/create', validateToken, async(req, res) => {
 
         return res.status(200).json({ message: 'Success', data: newUser })
     } catch (error) {
-        console.log('============ ERRO ================' + error);
-        return res.status(400).json({ 
-            message: 'Erro interno do servidor', 
+        return res.status(500).json({ 
+            message: 'Internal Server Error', 
             errorMessage: error 
         });
     }
@@ -48,8 +47,8 @@ route.get('/all', validateToken, async (req, res) => {
         const { name, email, user_type_id, status_id } = req.body.filters;
         const filters = {};
 
-        if (name) filters.name = { [Op.like]: `%${name}%` };
-        if (email) filters.email = { [Op.like]: `%${email}%` };
+        if (name) filters.name = { [Op.like]: `%{name}%` };
+        if (email) filters.email = { [Op.like]: `%{email}%` };
         if (user_type_id) filters.user_type_id = user_type_id;
         if (status_id) filters.status_id = status_id;
 
@@ -118,7 +117,7 @@ route.get('/:id', validateToken, async (req, res) => {
         ]
     });
     if (!user)
-        return res.status(400).json({ message: 'User not found!', userId: userId })
+        return res.status(404).json({ message: 'User not found!', userId: userId })
 
     return res.status(200).json({ message: 'Success', data: user })
 });
@@ -166,7 +165,7 @@ route.put('/:id', validateToken, async (req, res) => {
                 }
             ]
         });
-        if (!user) return res.status(400).json({ message: 'User not found!', userId: userId })
+        if (!user) return res.status(404).json({ message: 'User not found!', userId: userId })
     
         // Updating adress
         const addressFields = ['street', 'number', 'district', 'city_id', 'country_id', 'postal_code'];
@@ -207,7 +206,7 @@ route.put('/password-reset/:id', validateToken, async (req, res) => {
                 id: userId
             }
         });
-        if (!user) return res.status(400).json({ message: 'User not found!', userId: userId })
+        if (!user) return res.status(404).json({ message: 'User not found!', userId: userId })
 
         req.body.password = await validators.passwordValidator.encryptPassword(req.body.password);
         const allowedFields = ['password'];
@@ -226,8 +225,5 @@ route.put('/password-reset/:id', validateToken, async (req, res) => {
     }
 });
 
-route.get('/teste', (req, res) => {
-    res.send('Hello, world USER!');
-});
 
 export default route;
