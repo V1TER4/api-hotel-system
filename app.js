@@ -25,6 +25,12 @@ app.use('/api/user', routes.user);
 // Hotel
 app.use('/api/hotel', routes.hotel);
 
+// Room
+app.use('/api/room', routes.room);
+
+// Booking
+app.use('/api/booking', routes.booking);
+
 (async () => {
     try {
         await db.sequelize.authenticate();

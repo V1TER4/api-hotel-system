@@ -22,12 +22,12 @@ export async function up(queryInterface, Sequelize) {
 
   await queryInterface.bulkInsert('statuses', [{
     id: 1, 
-    description: 'Ativo',
+    description: 'Active',
     createdAt: new Date(),
     updatedAt: new Date(),
   }, {
     id: 2, 
-    description: 'Inativo',
+    description: 'Inactive',
     createdAt: new Date(),
     updatedAt: new Date(),
   }], {});

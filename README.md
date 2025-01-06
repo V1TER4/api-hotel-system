@@ -1,122 +1,110 @@
-## Hotel System API
+            ## Hotel System API
 
-This API is used to manage a hotel system.
+            This API is used to manage a hotel system.
 
-### Project Installation
+            ### Project Installation
 
-Follow the commands below to install and run the project:
+            Follow the commands below to install and run the project:
 
-```bash
-npm install
-npx sequelize db:migrate
-npx sequelize db:seed:all
-```
+            ```bash
+            # Clone the repository
+            git clone https://github.com/yourusername/api-hotel-system.git
 
-### Endpoints
+            # Navigate to the project directory
+            cd api-hotel-system
 
-#### List all hotels
+            # Install dependencies
+            npm install
 
-```http
-GET /hotels/all
-```
+            # Run database migrations
+            npx sequelize db:migrate
 
-#### Get hotel by ID
+            # Seed the database
+            npx sequelize db:seed:all
 
-```http
-GET /hotels/:id
-```
+            # Start the development server
+            npm start
+            ```
 
-#### Create a new hotel
+            ### Request Structure
 
-```http
-POST /hotels/create
-```
+            #### List Users
 
-#### Update a hotel
+            ```json
+            {
+                "filters": {
+                    "name": "Admin",
+                    "email": "admin@admin.com",
+                    "user_type_id": "1",
+                    "status_id": "1"
+                }
+            }
+            ```
 
-```http
-PUT /hotels/:id
-```
+            #### List Hotels
 
-### Request Structure
+            ```json
+            {
+                "filters": {
+                    "name": "Hotel Beira Mar",
+                    "city_id": 3479
+                }
+            }
+            ```
 
-#### List Users
+            #### Create/Update Hotel
 
-```json
-{
-    "filters": {
-        "name": "Admin",
-        "email": "admin@admin.com",
-        "user_type_id": "1",
-        "status_id": "1"
-    }
-}
-```
+            ```json
+            {
+                "name": "Hotel Beira Mar",
+                "email": "hotel@beiramar.com",
+                "document": "93079804000109",
+                "status_id": 1,
+                "telephone": "11973654879",
+                "address": {
+                    "street": "Rua Doutor Gervásio Bonavides",
+                    "number": 567,
+                    "district": "Vila Luis Antônio",
+                    "city_id": 3479,
+                    "state_id": 18,
+                    "country_id": 1,
+                    "postal_code": "11420210"
+                },
+                "rooms": {
+                    "1": {
+                        "room_number": "01",
+                        "capacity": 6,
+                        "price": 150.0,
+                        "description": "Apartamento no centro"
+                    },
+                    "2": {
+                        "room_number": "02",
+                        "capacity": 6,
+                        "price": 150.0,
+                        "description": "Apartamento no centro"
+                    }
+                }
+            }
+            ```
 
-#### List Hotels
+            ### Authentication
 
-```json
-{
-    "filters": {
-        "name": "Hotel Beira Mar",
-        "city_id": 3479
-    }
-}
-```
+            Authentication is done through a token. Add the token in the request headers:
 
-#### Create/Update Hotel
+            ```http
+            Authorization: Bearer <token>
+            ```
 
-```json
-{
-    "name": "Hotel Beira Mar",
-    "email": "hotel@beiramar.com",
-    "document": "93079804000109",
-    "status_id": 1,
-    "telephone": "11973654879",
-    "address": {
-        "street": "Rua Doutor Gervásio Bonavides",
-        "number": 567,
-        "district": "Vila Luis Antônio",
-        "city_id": 3479,
-        "state_id": 18,
-        "country_id": 1,
-        "postal_code": "11420210"
-    },
-    "rooms": {
-        "1": {
-            "room_number": "01",
-            "capacity": 6,
-            "price": 150.0,
-            "description": "Apartamento no centro"
-        },
-        "2": {
-            "room_number": "02",
-            "capacity": 6,
-            "price": 150.0,
-            "description": "Apartamento no centro"
-        }
-    }
-}
-```
+            ### Common Errors
 
-### Authentication
+            - `401 Unauthorized`: Invalid or missing token.
+            - `404 Not Found`: Hotel not found.
+            - `500 Internal Server Error`: Internal server error.
 
-Authentication is done through a token. Add the token in the request headers:
+            ### Contribution
 
-```http
-Authorization: Bearer <token>
-```
+            To contribute to this project, fork the repository, create a branch for your changes, and submit a pull request.
 
-### Common Errors
+            ### License
 
-- `401 Unauthorized`: Invalid or missing token.
-- `404 Not Found`: Hotel not found.
-- `500 Internal Server Error`: Internal server error.
-
-### Contribution
-
-To contribute to this project, fork the repository, create a branch for your changes, and submit a pull request.
-
-### License
-
-This project is licensed under the MIT license.
+            This project is licensed under the MIT license.

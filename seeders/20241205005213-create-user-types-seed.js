@@ -2,7 +2,6 @@
 
 export async function up(queryInterface, Sequelize) {
   const { default: db } = await import('../models/index.js');
-  
   const seedExecuted = await db.seedHistories.findOne({
     where: { name: 'CreateUserTypeSeeder' },
   });

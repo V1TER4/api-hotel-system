@@ -1,9 +1,7 @@
 'use strict';
-
 import { Model } from 'sequelize';
-
 export default (sequelize, DataTypes) => {
-    class HotelRooms extends Model {
+  class booking_status extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,18 +9,13 @@ export default (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      HotelRooms.belongsTo(models.hotels, { foreignKey: 'hotel_id' });
     }
   }
-  HotelRooms.init({
-    hotel_id: DataTypes.INTEGER,
-    room_number: DataTypes.STRING,
-    capacity: DataTypes.INTEGER,
-    price: DataTypes.FLOAT,
+  booking_status.init({
     description: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'hotel_rooms',
+    modelName: 'booking_status',
   });
-  return HotelRooms;
+  return booking_status;
 };

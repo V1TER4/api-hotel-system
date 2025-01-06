@@ -225,5 +225,25 @@ route.put('/password-reset/:id', validateToken, async (req, res) => {
     }
 });
 
+route.get('/:id/bookings', validateToken, async (req, res) => {
+    const Booking = db.bookings;
+    const userId = req.params.id;
+
+    try {
+        const bookings = await Booking.findAll({
+            where: { user_id: userId },
+            include: [
+                { model: db.booking_status, as: 'status' },
+                { model: db.hotel_rooms, as: 'hotel_room' },
+                { model: db.hotels, as: 'hotel' },
+            ]
+        });
+
+        return res.status(200).json({ message: 'Success', data: bookings });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal Server Error', error: error.message });
+    }
+});
 
 export default route;

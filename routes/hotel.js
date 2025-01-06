@@ -141,17 +141,17 @@ route.put('/:id', async (req, res) => {
             return res.status(404).json({ message: 'Hotel not found' });
         }
         await hotel.update({ email, telephone, status_id }, { transaction });
-
+        
         // update address
         const { street, number, district, city_id, state_id, country_id, postal_code } = req.body.address;
         const address = await db.address.findOne({ where: { id: hotel.address_id } });
         await address.update({ street, number, district, city_id, state_id, country_id, postal_code }, { transaction });
-
+        
         // update company
         const { name, document } = req.body;
         const company = await db.companies.findOne({ where: { id: hotel.company_id } });
         await company.update({ name, document }, { transaction });
-
+        
         // update rooms
         const rooms = req.body.rooms;
         for (const key in rooms) {
