@@ -7,7 +7,8 @@ import db from './models/index.js';
 
 env.config();
 
-const app = express()
+const app = express();
+const PORT = process.env.PORT;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -40,4 +41,4 @@ app.use('/api/booking', routes.booking);
     }
 })();
 
-app.listen(3000)
+app.listen(PORT)
