@@ -1,9 +1,10 @@
 import express from 'express';
+import logger from '../logs/logger.js';
 import db from '../models/index.js';
 import services from '../services/index.js';
+import {SqsService} from '../sqs/sqsService.js';
 import validators from '../validators/index.js';
 import { validateToken } from '../middlewares/tokenMiddleware.js';
-import {SqsService} from '../sqs/sqsService.js';
 import { buildTransactionMessage } from '../utils/financialTransaction.js';
 
 const route = express.Router();
@@ -23,7 +24,7 @@ route.get('/:id', validateToken, async (req, res) => {
 
         return res.status(200).json({ message: 'Success', data: bookings });
     } catch (error) {
-        console.error(error);
+        logger.error(error.message);
         return res.status(500).json({ message: 'Internal Server Error', error: error.message });
     }
 });
@@ -32,24 +33,36 @@ route.get('/:id', validateToken, async (req, res) => {
 route.post('/', validateToken, async (req, res) => {
     const Booking = db.bookings;
     const requiredFields = ['user_id', 'room_id', 'check_in', 'check_out', 'total_guests'];
+    const transaction = await db.sequelize.transaction();
+
     try {
         const requestValid = await validators.requestValidator.validateRequest(requiredFields, req);
-        if (requestValid) return res.status(401).json({ message: requestValid.error, missingField: requestValid.missingFields })
+        if (requestValid) {
+            await transaction.rollback();
+            return res.status(401).json({ message: requestValid.error, missingField: requestValid.missingFields });
+        }
 
         const checkRoomIsAvailable = await validators.bookingValidator.checkRoomIsAvailable(req.body);
-        if (checkRoomIsAvailable.error) return res.status(400).json({ message: checkRoomIsAvailable.error });
+        if (checkRoomIsAvailable.error) {
+            await transaction.rollback();
+            return res.status(400).json({ message: checkRoomIsAvailable.error });
+        }
 
         const calculateBooking = await services.bookingService.calculateBooking(req.body);
-        const booking = await Booking.create(calculateBooking);
+
+        const booking = await Booking.create(calculateBooking, { transaction });
 
         const transactionMessage = buildTransactionMessage(booking);
 
         const sqsService = new SqsService();
         await sqsService.sendMessage(transactionMessage);
 
+        await transaction.commit();
+
         return res.status(201).json({ message: 'Success', data: booking });
     } catch (error) {
-        console.error(error);
+        await transaction.rollback();
+        logger.error(error.message);
         return res.status(500).json({ message: 'Internal Server Error', error: error.message });
     }
 });
@@ -76,7 +89,7 @@ route.put('/:id/cancel', validateToken, async (req, res) => {
 
         return res.status(200).json({ message: 'Success', data: booking });
     } catch (error) {
-        console.error(error);
+        logger.error(error.message);
         return res.status(500).json({ message: 'Internal Server Error', error: error.message });
     }
 });
@@ -123,18 +136,13 @@ route.get('/teste/caralho/', validateToken, async (req, res) => {
                 State: user.address.city.uf,
                 Country: user.address.country.name
             },
-            Name: "Comprador crédito completo",
-            Email: "compradorteste@teste.com",
-            Birthdate: "1991-01-02"
+            Name: user.name,
+            Email: user.email,
         },
         Payment: {
             Type: "CreditCard",
             CreditCard: {
-                CardNumber: "1234123412341234",
-                Holder: "Teste Holder",
-                ExpirationDate: "12/2030",
-                SecurityCode: "123",
-                Brand: "Visa"
+                CardToken: "b8cf9ec3-9747-46e7-a697-fac023a75c2f"
             },
             Currency: "BRL",
             Country: "BRA",

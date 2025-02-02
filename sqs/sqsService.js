@@ -19,9 +19,10 @@ export class SqsService {
 
     // Send message to queue
     async sendMessage(messageBody) {
+        const message = JSON.stringify(messageBody);
         const command = new SendMessageCommand({
             QueueUrl: this.queueUrl,
-            MessageBody: messageBody,
+            MessageBody: message,
             MessageGroupId: "hotel-reserve-payment",
             MessageDeduplicationId: this.generateMessageDeduplicationId(),
         });

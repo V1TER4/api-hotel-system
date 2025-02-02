@@ -27,7 +27,7 @@ export function buildTransactionMessage(booking) {
             Birthdate: "1991-01-02"
         },
         Payment: {
-            Type: "CreditCard",
+
             CreditCard: {
                 CardNumber: "1234123412341234",
                 Holder: "Teste Holder",
@@ -36,10 +36,9 @@ export function buildTransactionMessage(booking) {
                 Brand: "Visa"
             },
             Currency: "BRL",
+            Type: "CreditCard",
             Country: "BRA",
-            ServiceTaxAmount: 0,
             Installments: 1,
-            Interest: "ByMerchant",
             Capture: true,
             Recurrent: "false",
             SoftDescriptor: "Hotel XYZ",
