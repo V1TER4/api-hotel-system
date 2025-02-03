@@ -13,6 +13,9 @@ export async function up(queryInterface, Sequelize) {
         payment_id: {
             type: Sequelize.STRING
         },
+        nsu: {
+            type: Sequelize.STRING
+        },
         amount: {
             type: Sequelize.DECIMAL
         },
@@ -33,10 +36,10 @@ export async function up(queryInterface, Sequelize) {
                 key: 'id'
             },
         },
-        created_at: {
+        createdAt: {
             type: Sequelize.DATE
         },
-        updated_at: {
+        updatedAt: {
             type: Sequelize.DATE
         }
     });

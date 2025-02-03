@@ -32,7 +32,7 @@ route.get('/:id', validateToken, async (req, res) => {
 // Create a booking
 route.post('/', validateToken, async (req, res) => {
     const Booking = db.bookings;
-    const requiredFields = ['user_id', 'room_id', 'check_in', 'check_out', 'total_guests'];
+    const requiredFields = ['user_id', 'room_id', 'check_in', 'check_out', 'total_guests', 'credit_card_token', 'payment.nsu', 'payment.credit_card_token'];
     const transaction = await db.sequelize.transaction();
 
     try {
@@ -49,10 +49,19 @@ route.post('/', validateToken, async (req, res) => {
         }
 
         const calculateBooking = await services.bookingService.calculateBooking(req.body);
-
         const booking = await Booking.create(calculateBooking, { transaction });
 
+        const nsu = req.body.payment.nsu;
+        booking.nsu = nsu;
+        booking.CreditCard = req.body.payment.credit_card_token;
         const transactionMessage = buildTransactionMessage(booking);
+        const bookingTransaction = await db.transaction_statuses.findOne({
+            where: { nsu: nsu }
+        });
+        if (bookingTransaction) {
+            await transaction.rollback();
+            return res.status(404).json({ message: 'Transaction duplicated!', nsu: nsu });
+        }
 
         const sqsService = new SqsService();
         await sqsService.sendMessage(transactionMessage);
@@ -89,6 +98,23 @@ route.put('/:id/cancel', validateToken, async (req, res) => {
 
         return res.status(200).json({ message: 'Success', data: booking });
     } catch (error) {
+        logger.error(error.message);
+        return res.status(500).json({ message: 'Internal Server Error', error: error.message });
+    }
+});
+
+route.post('/card', validateToken, async (req, res) => {
+    const requiredFields = ['customer_name', 'card_number', 'holder', 'expiration_date'];
+    try {
+        const requestValid = await validators.requestValidator.validateRequest(requiredFields, req);
+        if (requestValid) {
+            return res.status(401).json({ message: requestValid.error, missingField: requestValid.missingFields });
+        }
+
+        const cardToken = await services.cardService.CieloCardToken(req.body);
+
+        return res.status(200).json({ message: 'Success', data: cardToken });
+    } catch(error) {
         logger.error(error.message);
         return res.status(500).json({ message: 'Internal Server Error', error: error.message });
     }

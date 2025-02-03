@@ -17,57 +17,57 @@ export async function up(queryInterface, Sequelize) {
             code: 'AWS_ACCESS_KEY_ID',
             description: 'Aws Access Key',
             value: null,
-            created_at: new Date(),
-            updated_at: new Date()
+            createdAt: new Date(),
+            updatedAt: new Date()
         },
         {
             code: 'AWS_SECRET_ACCESS_KEY',
             description: 'Aws Secret Access Key',
             value: null,
-            created_at: new Date(),
-            updated_at: new Date()
+            createdAt: new Date(),
+            updatedAt: new Date()
         },
         {
             code: 'AWS_REGION',
             description: 'Região Aws',
             value: null,
-            created_at: new Date(),
-            updated_at: new Date()
+            createdAt: new Date(),
+            updatedAt: new Date()
         },
         {
             code: 'SQS_QUEUE_URL',
             description: 'Url SQS',
             value: null,
-            created_at: new Date(),
-            updated_at: new Date()
+            createdAt: new Date(),
+            updatedAt: new Date()
         },
         {
             code: 'CIELO_URL_API',
             description: 'Url Pagamento Cielo',
             value: null,
-            created_at: new Date(),
-            updated_at: new Date()
+            createdAt: new Date(),
+            updatedAt: new Date()
         },
         {
             code: 'CIELO_CONSULT_URL_API',
             description: 'Url de Consulta Cielo',
             value: null,
-            created_at: new Date(),
-            updated_at: new Date()
+            createdAt: new Date(),
+            updatedAt: new Date()
         },
         {
             code: 'CIELO_CLIENT_ID',
             description: 'Client ID Cielo',
             value: null,
-            created_at: new Date(),
-            updated_at: new Date()
+            createdAt: new Date(),
+            updatedAt: new Date()
         },
         {
             code: 'CIELO_CLIENT_SECRET',
             description: 'Client Secret Cielo',
             value: null,
-            created_at: new Date(),
-            updated_at: new Date()
+            createdAt: new Date(),
+            updatedAt: new Date()
         }
         ], {});
     } catch (error) {

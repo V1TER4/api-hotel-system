@@ -15,8 +15,8 @@ export default (sequelize, DataTypes) => {
     code: DataTypes.STRING,
     description: DataTypes.STRING,
     value: DataTypes.STRING,
-    created_at: DataTypes.DATE,
-    updated_at: DataTypes.DATE
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'parameter',
