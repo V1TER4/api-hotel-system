@@ -56,7 +56,6 @@ route.post('/', validateToken, async (req, res) => {
         const request = {};
         request.nsu = booking.nsu;
         request.creditCard = req.body.payment.credit_card_token;
-        request.endpoint = '';
         const transactionMessage = buildTransactionMessage(booking, request);
 
         const bookingTransaction = await db.transaction.findOne({

@@ -1,14 +1,17 @@
-import express, { response } from 'express';
-import bodyParser from 'body-parser';
+import SqsConsumerService from './sqs/sqsConsumer.js';
 import * as routes from './routes/index.js';
+import express from 'express';
+import bodyParser from 'body-parser';
 import env from 'dotenv';
 import cors from 'cors';
-import db from './models/index.js';
 
 env.config();
 
 const app = express();
 const PORT = process.env.PORT;
+
+const consumerService = new SqsConsumerService();  // Instancia o serviço
+consumerService.startConsumer();  // Inicia o consumidor
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -31,14 +34,5 @@ app.use('/api/room', routes.room);
 
 // Booking
 app.use('/api/booking', routes.booking);
-
-(async () => {
-    try {
-        await db.sequelize.authenticate();
-        console.log('Conexão com o banco de dados foi bem-sucedida!');
-    } catch (error) {
-        console.error('Erro ao conectar ao banco de dados:', error.message);
-    }
-})();
 
 app.listen(PORT)

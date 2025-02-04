@@ -24,6 +24,16 @@ export class SqsService {
         const command = new SendMessageCommand({
             QueueUrl: this.queueUrl,
             MessageBody: message,
+            MessageAttributes: {
+                "TransactionUrl": {
+                    DataType: "String",
+                    StringValue: "/cielo/transaction"
+                },
+                "QueueType": {
+                    DataType: "String",
+                    StringValue: "Payment"
+                }
+            },
             MessageGroupId: "hotel-reserve-payment",
             MessageDeduplicationId: this.generateMessageDeduplicationId(),
         });
