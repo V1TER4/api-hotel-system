@@ -19,7 +19,8 @@ export class SqsService {
 
     // Send message to queue
     async sendMessage(messageBody) {
-        const message = JSON.stringify(messageBody);
+        const resolvedMessageBody = await Promise.resolve(messageBody);
+        const message = JSON.stringify(resolvedMessageBody);
         const command = new SendMessageCommand({
             QueueUrl: this.queueUrl,
             MessageBody: message,

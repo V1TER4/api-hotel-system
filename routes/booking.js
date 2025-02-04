@@ -32,7 +32,7 @@ route.get('/:id', validateToken, async (req, res) => {
 // Create a booking
 route.post('/', validateToken, async (req, res) => {
     const Booking = db.bookings;
-    const requiredFields = ['user_id', 'room_id', 'check_in', 'check_out', 'total_guests', 'credit_card_token', 'payment.nsu', 'payment.credit_card_token'];
+    const requiredFields = ['user_id', 'room_id', 'check_in', 'check_out', 'total_guests', 'nsu', 'payment.credit_card_token'];
     const transaction = await db.sequelize.transaction();
 
     try {
@@ -51,12 +51,16 @@ route.post('/', validateToken, async (req, res) => {
         const calculateBooking = await services.bookingService.calculateBooking(req.body);
         const booking = await Booking.create(calculateBooking, { transaction });
 
-        const nsu = req.body.payment.nsu;
-        booking.nsu = nsu;
+        booking.nsu = req.body.nsu;
         booking.CreditCard = req.body.payment.credit_card_token;
-        const transactionMessage = buildTransactionMessage(booking);
-        const bookingTransaction = await db.transaction_statuses.findOne({
-            where: { nsu: nsu }
+        const request = {};
+        request.nsu = booking.nsu;
+        request.creditCard = req.body.payment.credit_card_token;
+        request.endpoint = '';
+        const transactionMessage = buildTransactionMessage(booking, request);
+
+        const bookingTransaction = await db.transaction.findOne({
+            where: { nsu: booking.nsu }
         });
         if (bookingTransaction) {
             await transaction.rollback();
