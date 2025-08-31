@@ -1,6 +1,7 @@
 import express from 'express';
-import logger from '../logs/logger.js';
 import db from '../models/index.js';
+import constants from '../constants/index.js';
+import logger from '../logs/logger.js';
 import services from '../services/index.js';
 import {SqsService} from '../sqs/sqsService.js';
 import validators from '../validators/index.js';
@@ -32,7 +33,7 @@ route.get('/:id', validateToken, async (req, res) => {
 // Create a booking
 route.post('/', validateToken, async (req, res) => {
     const Booking = db.bookings;
-    const requiredFields = ['user_id', 'room_id', 'check_in', 'check_out', 'total_guests', 'nsu', 'payment.credit_card_token'];
+    const requiredFields = ['user_id', 'room_id', 'check_in', 'check_out', 'total_guests', 'nsu', 'payment.credit_card_token', 'payment.installments'];
     const transaction = await db.sequelize.transaction();
 
     try {
@@ -57,14 +58,20 @@ route.post('/', validateToken, async (req, res) => {
         request.nsu = booking.nsu;
         request.creditCard = req.body.payment.credit_card_token;
         const transactionMessage = buildTransactionMessage(booking, request);
-
-        const bookingTransaction = await db.transaction.findOne({
-            where: { nsu: booking.nsu }
-        });
-        if (bookingTransaction) {
+        
+        const checkTransaction = await services.transactionService.checkTransaction(booking, request);
+        if(checkTransaction.error){
             await transaction.rollback();
-            return res.status(404).json({ message: 'Transaction duplicated!', nsu: nsu });
+            return res.status(400).json({ message: checkTransaction.error });
         }
+        await db.transaction.create({
+            nsu: booking.nsu,
+            amount: booking.total_value,
+            currency: 'BRL',
+            installments: req.body.payment.installments,
+            credit_card_token: req.body.payment.credit_card_token,
+            status_id: constants.status.TRANSACTION_STATUS.PENDING,
+        });
 
         const sqsService = new SqsService();
         await sqsService.sendMessage(transactionMessage);
@@ -118,6 +125,32 @@ route.post('/card', validateToken, async (req, res) => {
 
         return res.status(200).json({ message: 'Success', data: cardToken });
     } catch(error) {
+        logger.error(error.message);
+        return res.status(500).json({ message: 'Internal Server Error', error: error.message });
+    }
+});
+
+route.post('/confirm', validateToken, async (req, res) => {
+    const Booking = db.bookings;
+    const Transaction = db.bookings;
+
+    try {
+        if (!req.body.Payment.Status != constants.status.CIELO_PAYMENT_STATUS.PAYMENT_CONFIRMED) {
+            return res.status(400).json({ message: 'Payment not confirmed' });
+        }
+
+        const updateTransaction = await services.transactionService.updateTransaction(req.body);
+        if (updateTransaction.error) {
+            return res.status(400).json({ message: updateTransaction.error });
+        }
+
+        const updateBooking = await services.bookingService.updateBooking(req.body, updateTransaction);
+        if(updateBooking.error){
+            return res.status(400).json({ message: updateBooking.error });
+        }
+        
+        return true;
+    } catch (error) {
         logger.error(error.message);
         return res.status(500).json({ message: 'Internal Server Error', error: error.message });
     }

@@ -11,8 +11,9 @@ const route = express.Router();
 route.get('/all', validateToken, async (req, res) => {
     const Hotel = db.hotels;
     try {
-        const { name, city_id } = req.body.filters;
-        const filters = {};
+        const filters = req.body.filters || {};
+        console.log(filters);
+        const { name, city_id } = filters;
 
         if (name) filters.name = { [Op.like]: `%${name}%` };
         if (city_id) filters['$address.city_id$'] = city_id;
@@ -44,8 +45,6 @@ route.get('/:id', async (req, res) => {
         const hotelId = req.params.id;
         const hotel = await db.hotels.findOne({
             where: { 
-                ...
-                filters, 
                 id: hotelId 
             },
             include: [

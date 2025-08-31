@@ -8,7 +8,7 @@ import cors from 'cors';
 env.config();
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 const consumerService = new SqsConsumerService();  // Instancia o serviço
 consumerService.startConsumer();  // Inicia o consumidor
@@ -16,9 +16,9 @@ consumerService.startConsumer();  // Inicia o consumidor
 app.use(cors());
 app.use(bodyParser.json());
 
-app.get('/index', (req, res) => {
-    res.send("AQUI: " + process.env.DB_NAME)
-})
+app.get('/', (req, res) => {
+    res.send("AQUI: " + process.env.DB_NAME);
+});
 
 // Authorization
 app.use('/auth', routes.auth);
@@ -35,4 +35,10 @@ app.use('/api/room', routes.room);
 // Booking
 app.use('/api/booking', routes.booking);
 
-app.listen(PORT)
+app.use('/api/parameters', routes.parameter);
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+}).on('error', (err) => {
+    console.error('Server error:', err);
+});

@@ -75,5 +75,12 @@ export async function up(queryInterface, Sequelize) {
     }
 }
 export async function down(queryInterface, Sequelize) {
+    const { default: db } = await import('../models/index.js');
+    const seedExecuted = await db.seedHistories.findOne({
+        where: { name: 'CreatingParameterDefaultSeeder' },
+    });
+    if (seedExecuted) {
+        await seedExecuted.destroy();
+    }
     await queryInterface.bulkDelete('parameters', null, {});
 }

@@ -6,6 +6,8 @@ import validators from '../validators/index.js';
 const route = express.Router();
 
 route.post('/login', async (req, res) => {
+    console.log('TA CHEGANDO ALGUMA COISA AQUI');
+
     const User = db.users;
     try {
         const user = await User.findOne({

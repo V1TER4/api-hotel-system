@@ -56,7 +56,7 @@ export default class SqsConsumerService {
             console.error("Erro ao processar mensagem:", err.message);
         });
 
-        const interval = parseInt(process.env.CONSUMER_INTERVAL || "6000", 10); //6seg
+        const interval = parseInt(process.env.CONSUMER_INTERVAL || '5000', 10); // 5 seg
         this.consumerInterval = setInterval(() => {
             app.start();
             console.log("Consumidor SQS iniciado.");
@@ -65,7 +65,9 @@ export default class SqsConsumerService {
 
     async sendMessageToEndpoint(endpoint, payload) {
         try {
-            const response = await axios.post(`${process.env.APP_URL}${endpoint}`, payload);
+            console.log(endpoint)
+            console.log(payload)
+            const response = await axios.post(`${process.env.APP_URL}/${endpoint}`, payload);
             console.log("Mensagem enviada para o endpoint:", response.data);
         } catch (error) {
             console.error("Erro ao enviar mensagem para o endpoint:", error.message);
@@ -82,4 +84,4 @@ export default class SqsConsumerService {
 
 // Inicializa e executa o consumer
 const consumerService = new SqsConsumerService();
-consumerService.startConsumer();  // Certifique-se de chamar isso para iniciar o consumer imediatamente
+consumerService.startConsumer();

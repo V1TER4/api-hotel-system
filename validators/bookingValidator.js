@@ -38,7 +38,9 @@ export async function checkRoomIsAvailable(request) {
     });
     if (Room) return {error: 'Room is not available for the selected dates!'};
 
-    if (request.total_guests > room.capacity) return {error: 'Total guests exceeds the maximum limit!'};
+    if (request.total_guests > room.capacity) {
+        return {error: 'Total guests exceeds the maximum limit!'};
+    }
 
     return true;
 }

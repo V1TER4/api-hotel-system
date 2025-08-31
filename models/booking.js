@@ -15,6 +15,7 @@ export default (sequelize, DataTypes) => {
       bookings.belongsTo(models.hotel_rooms, { foreignKey: 'room_id', as: 'hotel_room' });
       bookings.belongsTo(models.hotels, { foreignKey: 'hotel_id', as: 'hotel' });
       bookings.belongsTo(models.booking_status, { foreignKey: 'status_id', as: 'status' });
+      bookings.belongsTo(models.transaction, { foreignKey: 'transaction_id', as: 'transaction' });
     }
   }
   bookings.init({
@@ -26,7 +27,8 @@ export default (sequelize, DataTypes) => {
     checkout_date: DataTypes.DATE,
     total_guests: DataTypes.INTEGER,
     total_value: DataTypes.DECIMAL,
-    status_id: DataTypes.INTEGER
+    status_id: DataTypes.INTEGER,
+    transaction_id: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'bookings',

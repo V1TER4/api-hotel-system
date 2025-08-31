@@ -1,25 +1,15 @@
 import db from '../models/index.js';
 
 export async function buildTransactionMessage(booking, request) {
-    const bookings = await db.bookings.findOne({
-        where: { hotel_id: 1 },
-        include: [
-            { model: db.booking_status, as: 'status' },
-            { model: db.users, as: 'user' },
-            { model: db.hotel_rooms, as: 'hotel_room' },
-            { model:db.hotels, as: 'hotel'},
-        ]
-    });
-    
     const hotel = await db.hotels.findOne({
-        where: { id: bookings.hotel_id},
+        where: { id: booking.hotel_id},
         include: [
             { model: db.address, as: 'address'}
         ]
     });
     
     const user = await db.users.findOne({
-        where: { id: bookings.user_id },
+        where: { id: booking.user_id },
         include: [
             {
                 model: db.address, as: 'address',
@@ -56,7 +46,7 @@ export async function buildTransactionMessage(booking, request) {
             Capture: true,
             Recurrent: "false",
             SoftDescriptor: hotel.name,
-            Amount: parseInt(bookings.total_value.toString().replace('.', ''))
+            Amount: parseInt(booking.total_value.toString().replace('.', ''))
         },
         MerchantOrderId: request.nsu
     };

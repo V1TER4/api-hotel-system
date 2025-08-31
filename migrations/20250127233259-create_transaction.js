@@ -25,7 +25,7 @@ export async function up(queryInterface, Sequelize) {
         installments: {
             type: Sequelize.INTEGER
         },
-        creadit_card_token: {
+        credit_card_token: {
             type: Sequelize.STRING
         },
         status_id: {

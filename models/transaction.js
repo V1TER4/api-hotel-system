@@ -20,7 +20,7 @@ export default (sequelize, DataTypes) => {
     amount: DataTypes.STRING,
     currency: DataTypes.DECIMAL,
     installments: DataTypes.STRING,
-    creadit_card_token: DataTypes.INTEGER,
+    credit_card_token: DataTypes.INTEGER,
     status_id: DataTypes.STRING,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE
